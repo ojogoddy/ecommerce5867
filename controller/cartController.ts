@@ -90,6 +90,64 @@ export const addToCart  =  async(req:Request, res:Response)=>{
 }
 
 
+export const removeFromCart = async (req:Request, res:Response) => {
+    try
+    {
+        const { userId } = req.params
+        const productId = req.query.productId
+        const a = "world"
+        console.log(`hello ${a}`)
+        
+
+        let cart:any = await cartModel.findOne({ user: userId })  
+        console.log(cart)
+
+        const position = cart?.cartItems.findIndex((item) => item.product == productId)
+        console.log(position)
+        if ( position > -1)
+        {
+            let item = cart?.cartItems[position]
+            if (item.quantity > 1)
+            {
+                  item.quantity -= 1;
+                cart.bill -= item.price;
+                
+            } else
+            {
+                 cart.bill -= item.quantity * item.price
+            if (cart.bill < 0)
+            {
+                cart.bill = 0
+            }
+            cart?.cartItems.splice(position, 1)
+            }
+           
+            cart.bill = cart.cartItems.reduce((acc, cur) => {
+                console.log(cur)
+                return acc + cur.quantity * cur.price
+            }, 0)
+            cart = await cart.save()
+
+               return res.status(201).json({
+                 message:"succesfuuly remove from cart",
+                //  result:dataCart
+             })
+         
+        } else
+        {
+             res.status(404).send("item not found");
+        }   
+    } catch (error)
+    {
+          return res.status(400).json({
+            message: error.message,
+            error: error.message
+        })
+   }
+    
+}
+ 
+
 
 
 //  const userId = req.params.userId
