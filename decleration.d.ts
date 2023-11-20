@@ -9,4 +9,6 @@ declare module "*jsonwebtoken";
 declare module "*nodemailer";
 declare module "*cloudinary";
 declare module "*multer";
+declare module "*uuid";
+declare module "*googleapis";
 declare module "*flutterwave-node-v3";

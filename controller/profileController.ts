@@ -7,25 +7,18 @@ import cloudinary from "../utils/cloudinary"
 export const editProfile = async (req: Request, res: Response) => {
     try
     {
-        const { firstName, lastName, gender } = req.body
-        
-        const { proId } = req.params
-        const getUpdate = await profileModle.findByIdAndUpdate(proId,
-            {
-                firstName,
-                lastName,
-                gender
-            },
-            {
-                new:true
-            }
+        const { firstName, lastName, gender } = req.body  
+        const { id } = req.params
+        const getUpdate = await profileModle.findByIdAndUpdate(
+            id,
+            { firstName,lastName,gender },
+            { new:true }
         )
         return res.status(201).json({
             message: "updated sucessfully",
             data:getUpdate
-        })
-        
-    } catch (error)
+        })  
+    } catch (error:any)
     {
         return res.status(400).json({
             message: 'failed to update profile',
@@ -38,7 +31,6 @@ export const editImage = async (req:any, res: Response) => {
     try
     {
         const { proId } = req.params
-        
         console.log(req.file)
         const imageurl = await cloudinary.uploader.upload(req.file.path)
         console.log("kaugdiu",imageurl )
@@ -49,14 +41,11 @@ export const editImage = async (req:any, res: Response) => {
             },
             {new:true}
         )
-
          return res.status(201).json({
             message: "image sucessfully update",
             data:updateImage
-        })
-
-        
-    } catch (error)
+        })    
+    } catch (error:any)
     {
         return res.status(400).json({
             message: error.message,

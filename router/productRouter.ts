@@ -1,9 +1,7 @@
 import express from "express"
+import {createProduct } from "../controller/productController"
+
 const router = express.Router()
-import {verifyToken} from "../utils/verify"
 
-import {creatProduct } from "../controller/productController"
-
-
-router.route("/create-product/:catId").post(verifyToken, creatProduct)
+router.route("/create-product/:catId").post( createProduct)
 export default router;

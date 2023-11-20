@@ -22,7 +22,7 @@ export const addToCart  =  async(req:Request, res:Response)=>{
         // console.log(checkUserCart)
         if (checkUserCart)
         {
-            const findIndexProduct = checkUserCart.cartItems.findIndex((item) => item?.product?.equals(productid))
+            const findIndexProduct = checkUserCart.cartItems.findIndex((item:any) => item?.product?.equals(productid))
 
             console.log("uisdui", findIndexProduct)
             if (findIndexProduct > -1)
@@ -31,7 +31,7 @@ export const addToCart  =  async(req:Request, res:Response)=>{
             console.log(userSelectPr)
             userSelectPr.quantity += 1
 
-            checkUserCart.bill = checkUserCart.cartItems.reduce((acc, cur) => {
+            checkUserCart.bill = checkUserCart.cartItems.reduce((acc:any, cur:any) => {
                 console.log(cur)
                 return acc + cur.quantity * cur.price
             }, 0)
@@ -49,7 +49,7 @@ export const addToCart  =  async(req:Request, res:Response)=>{
             {
                 checkUserCart.cartItems.push({ product: getProduct?._id, quantity: 1, price: getProduct?.price })
                 await checkUserCart.save()
-                 checkUserCart.bill = checkUserCart.cartItems.reduce((acc, cur) => {
+                 checkUserCart.bill = checkUserCart.cartItems.reduce((acc:any, cur:any) => {
                 console.log(cur)
                 return acc + cur.quantity * cur.price
             }, 0)
@@ -60,8 +60,7 @@ export const addToCart  =  async(req:Request, res:Response)=>{
                
              })
                 
-            }
-           
+            }       
             
         } else
         {
@@ -81,7 +80,7 @@ export const addToCart  =  async(req:Request, res:Response)=>{
 
       
 
-   }catch(error){
+   }catch(error:any){
         return res.status(400).json({
             message: error.message,
             error: error.message
@@ -90,61 +89,121 @@ export const addToCart  =  async(req:Request, res:Response)=>{
 }
 
 
-export const removeFromCart = async (req:Request, res:Response) => {
-    try
-    {
-        const { userId } = req.params
-        const productId = req.query.productId
-        const a = "world"
-        console.log(`hello ${a}`)
+// export const removeFromCart = async (req:Request, res:Response) => {
+//     try
+//     {
+//         const { userId } = req.params
+//         const productId = req.query.productId
+//         const a = "world"
+//         console.log(`hello ${a}`)
         
 
-        let cart:any = await cartModel.findOne({ user: userId })  
-        console.log(cart)
+//         let cart:any = await cartModel.findOne({ user: userId })  
+//         console.log(cart)
 
-        const position = cart?.cartItems.findIndex((item) => item.product == productId)
-        console.log(position)
-        if ( position > -1)
-        {
-            let item = cart?.cartItems[position]
-            if (item.quantity > 1)
-            {
-                  item.quantity -= 1;
-                cart.bill -= item.price;
+//         const position = cart?.cartItems.findIndex((item:any) => item.product == productId)
+//         console.log(position)
+//         if ( position > -1)
+//         {
+//             let item = cart?.cartItems[position]
+//             if (item.quantity > 1)
+//             {
+//                   item.quantity -= 1;
+//                 cart.bill -= item.price;
                 
-            } else
-            {
-                 cart.bill -= item.quantity * item.price
-            if (cart.bill < 0)
-            {
-                cart.bill = 0
-            }
-            cart?.cartItems.splice(position, 1)
-            }
+//             } else
+//             {
+//                  cart.bill -= item.quantity * item.price
+//             if (cart.bill < 0)
+//             {
+//                 cart.bill = 0
+//             }
+//             cart?.cartItems.splice(position, 1)
+//             }
            
-            cart.bill = cart.cartItems.reduce((acc, cur) => {
-                console.log(cur)
-                return acc + cur.quantity * cur.price
-            }, 0)
-            cart = await cart.save()
+//             cart.bill = cart.cartItems.reduce((acc:any, cur:any) => {
+//                 console.log(cur)
+//                 return acc + cur.quantity * cur.price
+//             }, 0)
+//             cart = await cart.save()
 
-               return res.status(201).json({
-                 message:"succesfuuly remove from cart",
-                //  result:dataCart
-             })
+//                return res.status(201).json({
+//                  message:"succesfuuly remove from cart",
+//                 //  result:dataCart
+//              })
          
-        } else
-        {
-             res.status(404).send("item not found");
-        }   
-    } catch (error)
+//         } else
+//         {
+//              res.status(404).send("item not found");
+//         }   
+//     } catch (error:any)
+//     {
+//           return res.status(400).json({
+//             message: error.message,
+//             error: error.message
+//         })
+//    }
+    
+// }
+
+export const RemovefromCart = async (req:Request, res:Response)=>{
+
+    
+    try
     {
-          return res.status(400).json({
+        const {userId} = req.params
+        let productId = req.query.productId
+
+        console.log(productId)
+        const checkUserCart = await cartModel.findOne({user:userId})
+        
+        const position:any = await checkUserCart?.cartItems?.findIndex((item:any)=>item?.product == productId)
+        console.log("position", position)
+
+
+        if(checkUserCart)
+        {
+            const item:any = checkUserCart.cartItems[position]
+            console.log(item)
+            
+
+            if (item > 1)
+            {
+                item.quantity -= 1
+                checkUserCart.bill -= item.price
+            }else{
+                checkUserCart.bill -= item.quantity * item.price
+                if(checkUserCart.bill < 0)
+                {
+                    checkUserCart.bill = 0
+                }
+                checkUserCart.cartItems.splice(position, 1)
+            }
+
+           
+            checkUserCart.bill = checkUserCart.cartItems.reduce((acc:any, cur:any)=>{
+                console.log(cur);
+                return acc + cur.quantity * cur.price
+                
+            }, 0)
+
+            
+            await checkUserCart.save()
+            return res.status(201).json({
+                message: "user have item in cart"
+            })
+        }else{
+            return res.status(401).json({
+                message: "no items in your cart"
+            })
+        }
+    }catch(error:any)
+    {
+        return res.status(400).json({
             message: error.message,
             error: error.message
         })
-   }
-    
+    }
 }
  
 

@@ -6,9 +6,10 @@ import {mainApp} from "./mainApp"
 
 const app: Application = express()
 mainApp(app)
+app.set("view engine", "ejs")
 
 const server = app.listen(port, () => {
-    console.log(`Server listeningxcv on ports ${port}`)
+    console.log(`Server listening on ports ${port}`)
 })
 
 

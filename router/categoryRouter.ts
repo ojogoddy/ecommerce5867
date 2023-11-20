@@ -4,7 +4,7 @@ const router = express.Router()
 import { createCat} from "../controller/categoryController"
 
 
-router.route("/create-category/:userId").post(createCat)
+router.route("/create-category/:userId").post( createCat)
 
 
 

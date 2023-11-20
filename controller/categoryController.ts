@@ -23,8 +23,7 @@ function generateStudentId() {
 export const createCat = async(req:Request, res:Response) =>{
     try{
         const { name, parent } = req.body
-        //  console.log("jhgsduifhsudih",req.user)
-         if (!name )
+         if (!name || !parent)
         {
             return res.status(401).json({
                 success:0,
@@ -32,9 +31,9 @@ export const createCat = async(req:Request, res:Response) =>{
            }) 
         }
         const {userId} = req.params
-        console.log(userId)
-        const getUser = await authModel.findOne({_id:userId})
-        console.log(getUser)
+        // console.log( "here",userId)
+        // const getUser = await authModel.findOne({_id:userId})
+        // console.log("here22",getUser)
 
         const dataCat:any = await catemodel.create({
             name,
@@ -42,14 +41,14 @@ export const createCat = async(req:Request, res:Response) =>{
             slug:`${slugify(name)}-${generateStudentId()}`
         })
 
-        dataCat.user = getUser
+        // dataCat.user = getUser
         dataCat.save()
         
         return res.status(201).json({
             message:dataCat
         })
 
-    }catch(error){
+    }catch(error:any){
             return res.status(400).json({
             message: error.message,
             error: error.message

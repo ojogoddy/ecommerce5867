@@ -21,6 +21,10 @@ const userSchema = new mongoose.Schema({
         enum: ["user", "admin", "superadmin"],
         default:"user",
     },
+    verify:{
+        type: Boolean,
+        default: false
+    },
     password: {
         type:String
     },

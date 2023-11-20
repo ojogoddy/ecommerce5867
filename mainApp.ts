@@ -15,6 +15,11 @@ export const mainApp = (app:Application) => {
         .use("/api/v1", productRouter)
         .use("/api/v1", cartRouter)
         .use("/api/v1", checkOutRouterv)
+        .get("/page/data", (req:any, res:any)=>{
+            const id = req.params.id
+            const userName = "Godwin"
+            res.render("verifyAccount", {userName, id})
+        })
         .get("/api/v1", (req:any, res:any) => {
         
             res.status(200).json({
